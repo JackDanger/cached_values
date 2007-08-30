@@ -8,7 +8,7 @@ module HasCachedValueExtension # :nodoc:
     # a very simple case in which has_cached_value works just like the .count method on a has_many association:
     #   
     #   class Company < ActiveRecord::Base
-    #     has_cached_value :total_employees, :sql => 'select count(*) from employees where company_id = #{id}'
+    #     caches_value :total_employees, :sql => 'select count(*) from employees where company_id = #{id}'
     #   end
     #  
     # a more sophisticated example:
@@ -16,7 +16,7 @@ module HasCachedValueExtension # :nodoc:
     #   class User < ActiveRecord::Base
     #     has_many :trinkets
     #     has_many :sales, :through => :trinkets
-    #     has_cached_value :remaining_trinket_sales_allotted, :sql => '... very complicated sql here ...'
+    #     caches_value :remaining_trinket_sales_allotted, :sql => '... very complicated sql here ...'
     #   end
     #  
     #   user = User.find(:first)
@@ -29,12 +29,12 @@ module HasCachedValueExtension # :nodoc:
     # in the context of the record instance.
     #  
     #   class User < ActiveRecord::Base
-    #     has_cached_value :expensive_calculation, :eval => "some_big_expensize_calculation(self.id)"
-    #     has_cached_value :other_expensive_process, :eval => Proc.new {|record| record.other_expensize_process }
+    #     caches_value :expensive_calculation, :eval => "some_big_expensize_calculation(self.id)"
+    #     caches_value :other_expensive_process, :eval => Proc.new {|record| record.other_expensize_process }
     #   end
     #
     
-    def has_cached_value(association_id, options = {})
+    def caches_value(association_id, options = {})
       reflection = create_has_cached_value_reflection(association_id, options)
 
       configure_dependency_for_has_cached_value(reflection)
