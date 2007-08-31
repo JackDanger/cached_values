@@ -1,6 +1,5 @@
-class Leprechaun < ActiveRecord::Base
-  
-end
+
+require File.expand_path(File.dirname(__FILE__) + "/leprechaun")
 
 ActiveRecord::Schema.define(:version => 1) do
   
@@ -8,6 +7,7 @@ ActiveRecord::Schema.define(:version => 1) do
     t.column :name,                                             :string
     t.column :favorite_color,                                   :string
     t.column :favorite_color_in_rot_13,                         :string
+    t.column :favorite_color_in_rot_13_without_cache,           :string
     t.column :favorite_color_turned_uppercase,                  :string
     t.column :id_of_first_leprechaun_with_same_favorite_color,  :integer
     t.column :some_other_cache_field,                           :string

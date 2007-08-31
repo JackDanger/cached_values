@@ -2,7 +2,7 @@ require 'test/unit'
 require File.expand_path(File.dirname(__FILE__) + "/test_helper")
 require File.expand_path(File.dirname(__FILE__) + "/leprechaun")
 
-class HasCachedValueTest < Test::Unit::TestCase
+class CachedValuesTest < Test::Unit::TestCase
   
   def setup
     @mc_nairn = Leprechaun.find(:first)
@@ -75,9 +75,11 @@ class HasCachedValueTest < Test::Unit::TestCase
     leprechaun = @mc_nairn
     assert_equal 'blue', leprechaun.favorite_color
     assert_equal 'oyhr', leprechaun.favorite_color_in_rot_13_without_cache
+    assert_nil leprechaun.send(:read_attribute, :favorite_color_in_rot_13_without_cache)
     leprechaun.update_attribute(:favorite_color, 'red')
     assert_equal 'erq', leprechaun.favorite_color.tr("A-Za-z", "N-ZA-Mn-za-m")
-    assert_equal 'erq', leprechaun.reload.favorite_color_in_rot_13_without_cache
+    assert_equal 'erq', leprechaun.favorite_color_in_rot_13_without_cache.reload
+    assert_nil leprechaun.send(:read_attribute, :favorite_color_in_rot_13_without_cache)
   end
   
   def test_should_respect_explicit_cache_column
