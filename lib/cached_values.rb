@@ -42,6 +42,7 @@ module CachedValues # :nodoc:
       reflection.options[:cache] ||= reflection.name unless false == options[:cache]
 
       cached_value_accessor_method(reflection, ActiveRecord::CachedValue)
+      cached_value_callback_methods(reflection)
     end
 
     private
@@ -58,7 +59,7 @@ module CachedValues # :nodoc:
       end
     
       def create_cached_value_reflection(name, options)
-        options.assert_valid_keys(:sql, :eval, :cache)
+        options.assert_valid_keys(:sql, :eval, :cache, :clear, :load, :reload)
         
         reflection = ActiveRecord::Reflection::MacroReflection.new(:cached_value, name, options, self)
         write_inheritable_hash :reflections, name => reflection
@@ -76,6 +77,20 @@ module CachedValues # :nodoc:
             force_reload ? association.reload : association.load
           end
           association.target.nil? ? nil : association
+        end
+      end
+      
+      def cached_value_callback_methods(reflection)
+        %w{clear reload}.each do |operation|
+          if events = reflection.options[operation.to_sym]
+            events = [events] unless events.is_a?(Array)
+            events.map! { |event| event.to_s }
+            ActiveRecord::Callbacks::CALLBACKS.each do |callback|
+              if events.include?(callback)
+                send(callback, Proc.new {|record| record.send(reflection.name).send(operation)})
+              end
+            end
+          end
         end
       end
   end
