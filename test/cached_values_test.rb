@@ -90,4 +90,24 @@ class CachedValuesTest < Test::Unit::TestCase
     assert_equal 'BLUE', leprechaun.send(:read_attribute, :some_other_cache_field)
     assert_equal 'RED', leprechaun.favorite_color_turned_uppercase_with_explicit_cache.reload
   end
+  
+  def test_reload_callback_should_fire
+    leprechaun = @mc_nairn
+    value = leprechaun.reload_callback.to_s
+    assert_equal value.to_i, leprechaun.reload_callback
+    leprechaun.save!
+    assert_not_equal value.to_i, leprechaun.reload_callback.reload
+    value = leprechaun.reload_callback.to_s
+    assert_equal value.to_i, leprechaun.reload_callback
+    leprechaun.valid?
+    assert_not_equal value.to_i, leprechaun.reload_callback
+  end
+  
+  def test_clear_callback_should_fire
+    leprechaun = @mc_nairn
+    assert leprechaun.clear_callback
+    assert leprechaun.instance_variable_get("@clear_callback")
+    leprechaun.valid?
+    assert_nil leprechaun.instance_variable_get("@clear_callback")
+  end
 end

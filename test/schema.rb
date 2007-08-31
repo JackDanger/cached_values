@@ -11,6 +11,8 @@ ActiveRecord::Schema.define(:version => 1) do
     t.column :favorite_color_turned_uppercase,                  :string
     t.column :id_of_first_leprechaun_with_same_favorite_color,  :integer
     t.column :some_other_cache_field,                           :string
+    t.column :reload_callback,                                  :float
+    t.column :clear_callback,                                   :float
   end
   
   Leprechaun.create!(:name => 'Mc Nairn', :favorite_color => 'blue')
