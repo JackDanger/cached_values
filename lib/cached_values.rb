@@ -34,23 +34,19 @@ module CachedValues # :nodoc:
     #   end
     #
     
-    def caches_value(association_id, options = {})
-      reflection = create_cached_value_reflection(association_id, options)
+    def caches_value(name, options = {})
+      reflection = create_cached_value_reflection(name, options)
 
       configure_dependency_for_cached_value(reflection)
 
-      reflection.options[:counter_cache] = reflection.options.delete(:cache) if reflection.options[:cache]
-      reflection.options[:counter_cache] ||= reflection.name unless false == reflection.options[:counter_cache]
+      reflection.options[:cache] ||= reflection.name unless false == reflection.options[:counter_cache]
 
-      association_accessor_method(reflection, ActiveRecord::CachedValue)
+      cached_value_accessor_method(reflection, ActiveRecord::CachedValue)
     end
 
     private
     
       def configure_dependency_for_cached_value(reflection)
-        if reflection.options[:counter_cache] && reflection.options[:cache]
-          raise ArgumentError, ":cache is an alias for :counter_cache, don't use both options for caches_value in #{self.name}"
-        end
       
         if !reflection.options[:sql] && !reflection.options[:eval]
           raise ArgumentError, "You must specify either the :eval or :sql options for caches_value in #{self.name}"
@@ -61,15 +57,15 @@ module CachedValues # :nodoc:
         end
       end
     
-      def create_cached_value_reflection(association_id, options)
-        options.assert_valid_keys(:sql, :eval, :cache, :counter_cache)
+      def create_cached_value_reflection(name, options)
+        options.assert_valid_keys(:sql, :eval, :cache)
         
-        reflection = ActiveRecord::Reflection::MacroReflection.new(:cached_value, association_id, options, self)
-        write_inheritable_hash :reflections, association_id => reflection
+        reflection = ActiveRecord::Reflection::MacroReflection.new(:cached_value, name, options, self)
+        write_inheritable_hash :reflections, name => reflection
         reflection
       end
 
-      def association_accessor_method(reflection, association_proxy_class)
+      def cached_value_accessor_method(reflection, association_proxy_class)
         define_method(reflection.name) do |*params|
           force_reload = params.first unless params.empty?
           association = instance_variable_get("@#{reflection.name}")
@@ -129,23 +125,12 @@ module ActiveRecord
     end
 
     protected
-    
-      def find_target_by_eval
-        if @reflection.options[:eval].is_a?(String)
-          eval(@reflection.options[:eval], @owner.send(:binding))
-        elsif @reflection.options[:eval].is_a?(Proc)
-          @reflection.options[:eval].call(@owner)
-        else
-          raise ArgumentError.new("The :eval option on a cached_values must be either a String or a Proc")
-        end
-      end
       
-      def find_target_by_sql
-        @owner.class.count_by_sql(sanitize_sql(interpolate_sql(@reflection.options[:sql])))
-      end
-      
-      def find_target_from_cache
-        @owner.send(:read_attribute, @reflection.counter_cache_column) if has_cached_counter?
+      def load_target
+        return nil unless defined?(@loaded)
+        @target = find_target unless loaded?
+        @loaded = true
+        @target
       end
 
       def find_target
@@ -157,27 +142,42 @@ module ActiveRecord
         target
       end
       
-      def update_cache(value)
-        return unless has_cached_counter?
-        unless @owner.new_record?
-          @owner.class.update_all(["#{@reflection.counter_cache_column} = ?", value], ["id = ?", @owner.id])
+      def find_target_from_cache
+        @owner.send(:read_attribute, cache_column) if has_cached_counter?
+      end
+      
+      def find_target_by_sql
+        @owner.class.count_by_sql(sanitize_sql(interpolate_sql(@reflection.options[:sql])))
+      end
+    
+      def find_target_by_eval
+        if @reflection.options[:eval].is_a?(String)
+          eval(@reflection.options[:eval], @owner.send(:binding))
+        elsif @reflection.options[:eval].is_a?(Proc)
+          @reflection.options[:eval].call(@owner)
+        else
+          raise ArgumentError.new("The :eval option on a cached_values must be either a String or a Proc")
         end
-        @owner.send(:write_attribute, @reflection.counter_cache_column, value)
+      end
+      
+      def cache_column
+        @reflection.options[:cache]
+      end
+
+      def has_cache?
+        @reflection.options[:cache] && @owner.attribute_names.include?(@reflection.options[:cache].to_s)
       end
       
       def clear_cache
         update_cache(nil)
       end
       
-      def load_target
-        return nil unless defined?(@loaded)
-        @target = find_target unless loaded?
-        @loaded = true
-        @target
-      end
-
-      def has_cached_counter?
-        @reflection.options[:counter_cache] && @owner.attribute_names.include?(@reflection.options[:counter_cache].to_s)
+      def update_cache(value)
+        return unless has_cache?
+        unless @owner.new_record?
+          @owner.class.update_all(["#{cache_column} = ?", value], ["id = ?", @owner.id])
+        end
+        @owner.send(:write_attribute, cache_column, value)
       end
       
       def interpolate_sql(sql, record = nil)
