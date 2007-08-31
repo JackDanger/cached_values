@@ -1,4 +1,4 @@
 # desc "Explaining what the task does"
-# task :has_cached_value do
+# task :cached_values do
 #   # Task goes here
 # end
