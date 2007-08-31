@@ -43,11 +43,13 @@ in the context of the record instance.
 
 The cache is customizable, you can specify which attribute should be used as a cache:
   
-  caches_value :runic_formula, :sql => '...'                                          # uses 'full_formula' column if it exists
-  caches_value :standard_deviation_of_gold_over_time, :sql => '...', :cache => 'std'  # uses 'std' column if it exists
-  caches_value :id, , :sql => '...', :cache => false                                  # does NOT save any cache.  This avoids overwriting an attribute
+  caches_value :runic_formula, :sql => '...'          # uses 'full_formula' column if it exists
+  caches_value :standard_deviation_of_gold_over_time, # uses 'std' column if it exists
+               :sql => '...', :cache => 'std'
+  caches_value :id, :sql => '...', :cache => false    # does NOT save any cache.  This avoids overwriting an attribute
 
-ActiveRecord callbacks can be used to call load (make sure the value is in memory), clear (flush the cache and delete the instance), or reload (flush cache and reload instance) at certain times:
+ActiveRecord callbacks can be used to call load (make sure the value is in memory), clear (flush the cache and
+delete the instance), or reload (flush cache and reload instance) at certain times:
   
   caches_value :standard_deviation, :sql => '...', :reload => [:after_save, :before_validation]
   caches_value :full_formula, :sql => '...', :clear => :after_find
