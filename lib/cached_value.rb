@@ -65,7 +65,10 @@ module ActiveRecord
       end
       
       def find_target_by_sql
-        @owner.class.count_by_sql(sanitize_sql(interpolate_sql(@reflection.options[:sql])))
+        sql = sanitize_sql(interpolate_sql(@reflection.options[:sql]))
+        result = @owner.class.connection.select_value(sql)
+        result = typecast_result(result)
+        result
       end
     
       def find_target_by_eval
@@ -96,6 +99,34 @@ module ActiveRecord
           @owner.class.update_all(["#{cache_column} = ?", value], ["id = ?", @owner.id])
         end
         @owner.send(:write_attribute, cache_column, value)
+      end
+      
+      def typecast_result(result)
+        if has_cache?
+          typecast_sql_result_by_cache_column_type(result)
+        else
+          if result =~ /^\d+\.\d+$/
+            result.to_f
+          elsif result =~ /^\d+$/
+            result.to_i
+          else
+            result
+          end
+        end
+      end
+      
+      def typecast_sql_result_by_cache_column_type(result)
+        type = @owner.column_for_attribute(cache_column).type
+        case type
+        when :integer
+          result.to_i
+        when :float
+          result.to_f
+        when :boolean
+          [0,'0', 'NULL', 'nil', 'false', '', 'FALSE', 'False'].include?(result)
+        else
+          result
+        end
       end
       
       def interpolate_sql(sql, record = nil)

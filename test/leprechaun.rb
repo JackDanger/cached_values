@@ -6,4 +6,7 @@ class Leprechaun < ActiveRecord::Base
   caches_value :favorite_color_turned_uppercase_with_explicit_cache, :eval => "favorite_color.upcase", :cache => 'some_other_cache_field'
   caches_value :reload_callback, :eval => "rand(1000)", :reload => [:before_save, :after_validation]
   caches_value :clear_callback, :eval => "rand(1000)", :clear => :before_validation
+  caches_value :float_cast, :sql => "select 82343.222"
+  caches_value :integer_cast, :sql => "select 19"
+  caches_value :string_cast, :sql => 'select "Top \'o the mornin\' to ya"'
 end
