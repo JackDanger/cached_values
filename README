@@ -1,13 +1,59 @@
-HasCachedValue
+Cached Values
 ==============
 
-Introduction goes here.
-
+A dead-simple way to calculate any value via Ruby or SQL and have it saved in a database field.
 
 Example
 =======
 
-Example goes here.
+USAGE:
+
+You can calculate values with a single line in any ActiveRecord model.  To actually save those values you'll need to create
+an attribute in your schema.  By default the cached_value instance will look for an attribute with the same name as itself.
+You can override this by specifying a :cache => :some_attribute option
+
+A very simple case in which cached_values works just like the .count method on a has_many association:
+
+  class Company < ActiveRecord::Base
+   caches_value :total_employees, :sql => 'select count(*) from employees where company_id = #{id}'
+  end
+
+A more sophisticated example:
+
+  class User < ActiveRecord::Base
+   has_many :trinkets
+   has_many :sales, :through => :trinkets
+   caches_value :remaining_trinket_sales_allotted, :sql => '... very complicated sql here ...'
+  end
+
+reload() clears the cache and recalculates the value:
+
+  user = User.find(:first)
+  user.remaining_trinket_sales_allotted # => 70
+  Trinket.delete_all # <= any operation that would affect our value
+  user.remaining_trinket_sales_allotted # => 70
+  user.remaining_trinket_sales_allotted.reload # => 113
+  
+The same effect could be had by calling clear() which clears the cache and removes the cache instance from memory
+
+You can also calculate the value in Ruby using a string to be eval'ed or a Proc.  Both are evaluated
+in the context of the record instance.
+
+  caches_value :expensive_calculation, :eval => "some_big_expensize_calculation(self.id)"
+  caches_value :other_expensive_process, :eval => Proc.new {|record| record.other_expensize_process }
+
+The cache is customizable, you can specify which attribute should be used as a cache:
+  
+  caches_value :full_formula, :sql => '...'                         # uses 'full_formula' column if it exists
+  caches_value :standard_deviation, :sql => '...', :cache => 'std'  # uses 'std' column if it exists
+  caches_value :id, , :sql => '...', :cache => false                # does NOT save any cache.  This avoids overwriting an attribute
+
+Callbacks can be used to call load(), clear(), or reload() at certain times:
+  
+  caches_value :standard_deviation, :sql => '...', :reload => [:after_save, :before_validation]
+  caches_value :full_formula, :sql => '...', :clear => :after_find
 
 
-Copyright (c) 2007 [name of plugin creator], released under the MIT license
+Bugs can be filed at http://code.lighthouseapp.com/projects/4502-hoopla-rails-plugins/overview
+
+Copyright (c) 2007 Jack Danger Canty @ http://6brand.com, released under the MIT license
