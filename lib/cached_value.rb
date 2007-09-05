@@ -20,9 +20,8 @@ module ActiveRecord
     end
 
     def reload
-      reset
-      clear_cache
-      load_target
+      clear
+      @owner.send @reflection.name
     end
     
     def clear
