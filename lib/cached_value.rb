@@ -75,6 +75,8 @@ module ActiveRecord
           eval(@reflection.options[:eval], @owner.send(:binding))
         elsif @reflection.options[:eval].is_a?(Proc)
           @reflection.options[:eval].call(@owner)
+        elsif @reflection.options[:eval].is_a?(Symbol)
+          @owner.send @reflection.options[:eval]
         else
           raise ArgumentError.new("The :eval option on a cached_values must be either a String or a Proc")
         end

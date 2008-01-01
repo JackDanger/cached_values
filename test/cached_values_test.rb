@@ -33,6 +33,15 @@ class CachedValuesTest < Test::Unit::TestCase
     assert_equal 'GOLD', @mc_nairn.favorite_color_turned_uppercase.reload
   end
   
+  def test_symbol_should_calculate_value_from_method_call
+    assert_equal '127 gold coins', @mc_nairn.number_of_gold_coins
+    assert_equal '127 gold coins', @mc_nairn.calculate_gold
+    @mc_nairn.class.class_eval { def calculate_gold; '255 gold coins'; end }
+    assert_equal '255 gold coins', @mc_nairn.calculate_gold
+    assert_equal '127 gold coins', @mc_nairn.number_of_gold_coins
+    assert_equal '255 gold coins', @mc_nairn.number_of_gold_coins.reload
+  end
+  
   def test_sql_should_properly_calculate_value
     assert_equal 3, @mc_nairn.id_of_first_leprechaun_with_same_favorite_color
     Leprechaun.find_by_name("O' Houhlihan").update_attribute(:favorite_color, 'blue')
