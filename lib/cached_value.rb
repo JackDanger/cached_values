@@ -78,7 +78,7 @@ module ActiveRecord
         elsif @reflection.options[:eval].is_a?(Symbol)
           @owner.send @reflection.options[:eval]
         else
-          raise ArgumentError.new("The :eval option on a cached_values must be either a String or a Proc")
+          raise ArgumentError.new("The :eval option on a cached_values must be a String or a Proc or a Symbol")
         end
       end
       
