@@ -20,7 +20,6 @@ module ActiveRecord
     end
 
     def reload
-      @owner.clear_association_cache
       @owner.instance_variable_set("@#{@reflection.name}", nil)
       reset
       @target = find_target(true)
