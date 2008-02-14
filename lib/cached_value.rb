@@ -26,6 +26,8 @@ module ActiveRecord
       @owner.send @reflection.name
     end
     
+    alias update reload
+    
     def clear
       clear_cache
       @owner.instance_variable_set("@#{@reflection.name}", nil)
