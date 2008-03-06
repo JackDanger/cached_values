@@ -8,16 +8,13 @@ require 'test/unit'
 require 'active_record'
 require 'active_record/fixtures'
 require "cached_values"
-require File.expand_path(File.dirname(__FILE__) + "/leprechaun")
+require File.expand_path(File.dirname(__FILE__) + "/test/leprechaun")
 
-config = YAML::load(IO.read(File.dirname(__FILE__) + '/database.yml'))
-ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__) + "/debug.log")
+config = YAML::load(IO.read(File.dirname(__FILE__) + '/test/database.yml'))
+ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__) + "/test/debug.log")
 ActiveRecord::Base.establish_connection(config[ENV['DB'] || 'sqlite3'])
 
-load(File.dirname(__FILE__) + "/schema.rb") if File.exist?(File.dirname(__FILE__) + "/schema.rb")
-
-Test::Unit::TestCase.fixture_path = File.dirname(__FILE__) + "/fixtures/"
-$LOAD_PATH.unshift(Test::Unit::TestCase.fixture_path)
+load(File.dirname(__FILE__) + "/schema.rb") if File.exist?(File.dirname(__FILE__) + "/test/schema.rb")
 
 class Test::Unit::TestCase #:nodoc:
   # def create_fixtures(*table_names)
