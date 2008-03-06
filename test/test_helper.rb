@@ -2,13 +2,12 @@
 #   require File.expand_path(File.dirname(__FILE__) + "/test_helper")
 
 $:.unshift(File.dirname(__FILE__) + '/../lib')
-RAILS_ROOT = File.dirname(__FILE__)
 
 require 'rubygems'
 require 'test/unit'
 require 'active_record'
 require 'active_record/fixtures'
-require "#{File.dirname(__FILE__)}/../init"
+require "cached_values"
 require File.expand_path(File.dirname(__FILE__) + "/leprechaun")
 
 config = YAML::load(IO.read(File.dirname(__FILE__) + '/database.yml'))

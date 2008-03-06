@@ -1,22 +1,17 @@
-require 'rake'
-require 'rake/testtask'
-require 'rake/rdoctask'
+# -*- ruby -*-
 
-desc 'Default: run unit tests.'
-task :default => :test
+$:.unshift(File.dirname(__FILE__) + '/lib')
+$:.unshift(File.dirname(__FILE__) + '/lib/cached_values')
 
-desc 'Test the cached_values plugin.'
-Rake::TestTask.new(:test) do |t|
-  t.libs << 'lib'
-  t.pattern = 'test/**/*_test.rb'
-  t.verbose = true
+
+require 'rubygems'
+require 'hoe'
+require "cached_values"
+
+Hoe.new('CachedValues', CachedValues::VERSION) do |p|
+  # p.rubyforge_name = 'CachedValuesx' # if different than lowercase project name
+  p.remote_rdoc_dir = '' # Release to root
+  p.developer('Jack Danger Canty', 'rubygems_cached_values@6brand.com')
 end
 
-desc 'Generate documentation for the cached_values plugin.'
-Rake::RDocTask.new(:rdoc) do |rdoc|
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title    = 'HasCachedValue'
-  rdoc.options << '--line-numbers' << '--inline-source'
-  rdoc.rdoc_files.include('README')
-  rdoc.rdoc_files.include('lib/**/*.rb')
-end
+# vim: syntax=Ruby
