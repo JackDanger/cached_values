@@ -1,13 +1,14 @@
 require 'active_record'
 require File.expand_path(File.dirname(__FILE__) + '/cached_value')
 
-module CachedValues # :nodoc:
-  
-  VERSION = '1.0.0'
+module CachesValues # :nodoc:
   
   def self.included(base)
-    base.extend(ClassMethods)
+    unless base.extended_by.include?(CachesValues::ClassMethods)
+      base.extend(ClassMethods)
+    end
   end
+
   module ClassMethods
     # USAGE:
     #  

@@ -1,5 +1,5 @@
 require 'test/unit'
-require File.expand_path(File.dirname(__FILE__) + "/../test_helper")
+require File.expand_path(File.dirname(__FILE__) + "/test_helper")
 
 class CachedValuesTest < Test::Unit::TestCase
   
@@ -12,10 +12,6 @@ class CachedValuesTest < Test::Unit::TestCase
     @mc_nairn.favorite_color_turned_uppercase_with_explicit_cache.clear
     @mc_nairn.favorite_color = 'blue'
     @mc_nairn.save!
-  end
-  
-  def teardown
-    setup
   end
   
   def test_proc_should_properly_calculate_value
