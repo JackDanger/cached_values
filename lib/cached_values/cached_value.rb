@@ -10,18 +10,17 @@ module ActiveRecord
     
     def reset
       @target = nil
-      @loaded = false
     end
 
     def load
       reset
-      load_target
+      @target = find_target(true)
+      update_cache(@target)
     end
 
     def reload
       @owner.instance_variable_set("@#{@reflection.name}", nil)
-      reset
-      @target = find_target(true)
+      load
       @owner.send @reflection.name
     end
     
@@ -32,32 +31,16 @@ module ActiveRecord
       @owner.instance_variable_set("@#{@reflection.name}", nil)
     end
 
-    def loaded?
-      @loaded
-    end
-    
-    def loaded
-      @loaded = true
-    end
-    
     def target
       @target
     end
 
     protected
       
-      def load_target
-        return nil unless defined?(@loaded)
-        @target = find_target unless loaded?
-        @loaded = true
-        @target
-      end
-
       def find_target(skip_cache = false)
         target = find_target_from_cache unless skip_cache
         unless target
           target ||= @reflection.options[:sql] ? find_target_by_sql : find_target_by_eval
-          update_cache(target)
         end
         target
       end
