@@ -1,3 +1,7 @@
+=== 1.0.1 / 2008-03-12
+
+* The find_target method is now public
+
 === 1.0.0 / 2008-03-06
 
 * Converted from a Rails plugin
