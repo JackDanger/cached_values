@@ -35,15 +35,15 @@ module ActiveRecord
       @target
     end
 
-    protected
-      
-      def find_target(skip_cache = false)
-        target = find_target_from_cache unless skip_cache
-        unless target
-          target ||= @reflection.options[:sql] ? find_target_by_sql : find_target_by_eval
-        end
-        target
+    def find_target(skip_cache = false)
+      target = find_target_from_cache unless skip_cache
+      unless target
+        target ||= @reflection.options[:sql] ? find_target_by_sql : find_target_by_eval
       end
+      target
+    end
+    
+    protected
       
       def find_target_from_cache
         @owner.send(:read_attribute, cache_column) if has_cache?
