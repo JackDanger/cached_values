@@ -85,7 +85,7 @@ module ActiveRecord
         unless @owner.new_record?
           @owner.class.update_all(["#{cache_column} = ?", value], ["id = ?", @owner.id])
         end
-        @owner.send(:write_attribute, cache_column, value)
+        @owner.send(:write_attribute, cache_column, value) unless @owner.frozen?
       end
       
       def typecast_result(result)
