@@ -11,7 +11,7 @@ require "cached_values"
 Hoe.new('cached_values', CachedValues::VERSION) do |p|
   p.rubyforge_name = 'cachedvalues' # if different than lowercase project name
   p.remote_rdoc_dir = '' # Release to root
-  p.developer('Jack Danger Canty', 'rubygems_cached_values@6brand.com')
+  p.developer('Jack Danger Canty', 'rubygems@6brand.com')
 end
 
 # vim: syntax=Ruby
