@@ -1,3 +1,4 @@
+gem 'object_proxy'
 require 'object_proxy'
   
 module ActiveRecord
