@@ -4,7 +4,9 @@
 $:.unshift(File.dirname(__FILE__) + '/../lib')
 
 require 'rubygems'
+gem 'test-unit'
 require 'test/unit'
+require 'active_support'
 require 'active_record'
 require 'active_record/fixtures'
 require "cached_values"
@@ -16,7 +18,7 @@ ActiveRecord::Base.establish_connection(config[ENV['DB'] || 'sqlite3'])
 
 load(File.dirname(__FILE__) + "/schema.rb") if File.exist?(File.dirname(__FILE__) + "/schema.rb")
 
-class Test::Unit::TestCase #:nodoc:
+class ActiveSupport::TestCase #:nodoc:
   
   # def create_fixtures(*table_names)
   #   if block_given?
@@ -27,10 +29,10 @@ class Test::Unit::TestCase #:nodoc:
   # end
 
   # Turn off transactional fixtures if you're working with MyISAM tables in MySQL
-  self.use_transactional_fixtures = true
+  # self.use_transactional_fixtures = true
   
   # Instantiated fixtures are slow, but give you @david where you otherwise would need people(:david)
-  self.use_instantiated_fixtures  = false
+  # self.use_instantiated_fixtures  = false
 
   # Add more helper methods to be used by all tests here...
 end

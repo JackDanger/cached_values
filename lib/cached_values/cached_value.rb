@@ -82,10 +82,18 @@ module ActiveRecord
       
       def update_cache(value)
         return unless has_cache?
-        unless @owner.new_record?
-          @owner.class.update_all(["#{cache_column} = ?", value], ["id = ?", @owner.id])
-        end
-        @owner.send(:write_attribute, cache_column, value) unless @owner.frozen?
+
+        @owner.send(:write_attribute, cache_column, value)
+
+        return if @owner.new_record? || !CachedValues.perform_save?
+
+        exist_conditions = value.nil? ?
+                              [ "#{cache_column} IS NULL AND id = ?", @owner.id ] :
+                              [ "(#{cache_column} = ? AND #{cache_column} IS NOT NULL) AND id = ?", value, @owner.id ]
+
+        return if @owner.class.exists? exist_conditions
+
+        @owner.class.update_all   [ "#{cache_column} = ?", value], ["id = ?", @owner.id ]
       end
       
       def typecast_result(result)

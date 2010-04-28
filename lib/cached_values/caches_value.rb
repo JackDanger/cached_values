@@ -74,27 +74,32 @@ module CachesValues # :nodoc:
       end
 
       def cached_value_accessor_method(reflection, association_proxy_class)
-        define_method(reflection.name) do |*params|
-          force_reload = params.first unless params.empty?
+        define_method(reflection.name) do
           association = instance_variable_get("@#{reflection.name}")
           
-          if association.nil? || force_reload
+          if association.nil?
             association = association_proxy_class.new(self, reflection)
             instance_variable_set("@#{reflection.name}", association)
-            force_reload ? association.reload : association.load
+            association.load
           end
           association.target.nil? ? nil : association
         end
       end
       
       def cached_value_callback_methods(reflection)
-        %w{clear reload}.each do |operation|
-          if events = reflection.options[operation.to_sym]
-            events = [events] unless events.is_a?(Array)
-            events.map! { |event| event.to_s }
-            ActiveRecord::Callbacks::CALLBACKS.each do |callback|
-              if events.include?(callback)
-                send(callback, Proc.new {|record| record.send(reflection.name).send(operation)})
+        if events = reflection.options[:reload]
+          events = Array(events).map { |event| event.to_s }
+          ActiveRecord::Callbacks::CALLBACKS.each do |callback|
+            if events.include?(callback)
+              # before_save do |record|
+              send callback do |record|
+                if %{before_save before_create before_destroy}.include?(callback.to_s)
+                  CachedValues.without_saving_record do
+                    record.send(reflection.name).reload
+                  end
+                else
+                  record.send(reflection.name).reload
+                end
               end
             end
           end

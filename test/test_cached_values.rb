@@ -1,4 +1,3 @@
-require 'test/unit'
 require File.expand_path(File.dirname(__FILE__) + "/test_helper")
 
 class CachedValuesTest < Test::Unit::TestCase
@@ -95,13 +94,6 @@ class CachedValuesTest < Test::Unit::TestCase
     assert_equal value.to_i, @mc_nairn.reload_callback
     @mc_nairn.valid?
     assert_not_equal value.to_i, @mc_nairn.reload_callback
-  end
-  
-  def test_clear_callback_should_fire
-    assert @mc_nairn.clear_callback
-    assert @mc_nairn.instance_variable_get("@clear_callback")
-    @mc_nairn.valid?
-    assert_nil @mc_nairn.instance_variable_get("@clear_callback")
   end
   
   def test_sql_should_cast_to_integer
