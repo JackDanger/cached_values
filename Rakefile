@@ -4,7 +4,7 @@ begin
     gem.name = "cached_values"
     gem.summary = %Q{Memoize and persist calculations into ActiveRecord attributes}
     gem.description = %Q{Speedup your ActiveRecord by storing and updating the results of SQL or Ruby expressions into record attributes}
-    gem.email = "gitcommit@6brand.com"
+    gem.email = "rubygems@6brand.com"
     gem.homepage = "http://github.com/JackDanger/cached_values"
     gem.authors = ["Jack Danger Canty"]
     gem.add_dependency "object_proxy", ">= 0"
