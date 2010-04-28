@@ -1,17 +1,27 @@
-# -*- ruby -*-
-
-$:.unshift(File.dirname(__FILE__) + '/lib')
-$:.unshift(File.dirname(__FILE__) + '/lib/cached_values')
-
-
-require 'rubygems'
-require 'hoe'
-require "cached_values"
-
-Hoe.new('cached_values', CachedValues::VERSION) do |p|
-  p.rubyforge_name = 'cachedvalues' # if different than lowercase project name
-  p.remote_rdoc_dir = '' # Release to root
-  p.developer('Jack Danger Canty', 'rubygems@6brand.com')
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gem|
+    gem.name = "cached_values"
+    gem.summary = %Q{Memoize and persist calculations into ActiveRecord attributes}
+    gem.description = %Q{Speedup your ActiveRecord by storing and updating the results of SQL or Ruby expressions into record attributes}
+    gem.email = "gitcommit@6brand.com"
+    gem.homepage = "http://github.com/JackDanger/cached_values"
+    gem.authors = ["Jack Danger Canty"]
+    gem.add_development_dependency "active_record", ">= 0"
+    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+  end
+  Jeweler::GemcutterTasks.new
+rescue LoadError
+  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
 end
 
-# vim: syntax=Ruby
+
+
+task :default => :test
+
+require 'rake/testtask'
+Rake::TestTask.new(:test) do |test|
+  test.libs << '.'
+  test.pattern = 'test/*_test.rb'
+  test.verbose = true
+end
