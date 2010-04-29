@@ -6,22 +6,15 @@ module ActiveRecord
 
     def initialize(owner, reflection)
       @owner, @reflection = owner, reflection
-      reset
     end
     
-    def reset
-      @target = nil
-    end
-
     def load
-      reset
       @target = find_target(true)
       update_cache(@target)
     end
 
     def reload
       @owner.instance_variable_set("@#{@reflection.name}", nil)
-      load
       @owner.send @reflection.name
     end
     
