@@ -1,19 +1,18 @@
-= Cached Values
+Cached Values
+=
 
-* http://github.com/JackDanger/cached_values/
+[http://github.com/JackDanger/cached_values/](http://github.com/JackDanger/cached_values/)
 
 A dead-simple way to calculate any value via Ruby or SQL and (optionally) have it saved in a database field.
 
-== REQUIREMENTS:
-
-* ObjectProxy
-
-== INSTALL:
+INSTALL:
+==
 
 * as gem: sudo gem install cached_values
 * as plugin: ./script/plugin install git://github.com/JackDanger/cached_values.git
 
-== USAGE:
+USAGE:
+==
 
 You can calculate values with a single line in any ActiveRecord model.  To actually save those values you'll need to create
 an attribute in your schema.  By default the cached_value instance will look for an attribute with the same name as itself.
@@ -22,7 +21,7 @@ You can override this by specifying a :cache => :some_attribute option
 A very simple case in which cached_values works just like the .count method on a has_many association:
 
   class Leprechaun < ActiveRecord::Base
-   caches_value :total_gold_coins, :sql => 'select count(*) from gold_coins where leprechaun_id = #{id}'
+    caches_value :total_gold_coins, :sql => 'select count(*) from gold_coins where leprechaun_id = #{id}'
   end
   
   Company.find(4).total_employees # => 45
@@ -30,9 +29,9 @@ A very simple case in which cached_values works just like the .count method on a
 A more sophisticated example:
 
   class Leprechaun < ActiveRecord::Base
-   has_many :lucky_charms
-   has_many :deceived_children, :through => :lucky_charms
-   caches_value :total_children_remaining_to_be_deceived, :sql => '... very complicated sql here ...'
+    has_many :lucky_charms
+    has_many :deceived_children, :through => :lucky_charms
+    caches_value :total_children_remaining_to_be_deceived, :sql => '... very complicated sql here ...'
   end
   
   Leprechaun.find(14).total_children_remaining_to_be_deceived # => 6,692,243,122
