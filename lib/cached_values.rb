@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + "/cached_value")
 
 module CachedValues # :nodoc:
   def self.perform_save?
-    @perform_save
+    @perform_save ||= true
   end
 
   def self.without_saving_record
