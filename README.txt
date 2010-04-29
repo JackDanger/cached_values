@@ -44,23 +44,23 @@ You can also calculate the value in Ruby using a string to be eval'ed or a Proc.
 in the context of the record instance.
 
   class Leprechaun < ActiveRecord::Base
-    caches_value :total_gold, :eval => "some_archaic_and_silly_calculation(self.gold_coins)"
+    caches_value :total_gold, :eval => "some_archaic_and_silly_calculation(gold_coins)"
     caches_value :total_lucky_charms, :eval => Proc.new {|record| record.calculate_total_lucky_charms }
   end
 
 The cache is customizable, you can specify which attribute should be used as a cache:
   
-  caches_value :runic_formula, :sql => '...'          # uses 'full_formula' column if it exists
+  caches_value :runic_formula, :sql => '...'          # uses 'runic_formula' column if it exists
   caches_value :standard_deviation_of_gold_over_time, # uses 'std' column if it exists
                :sql => '...', :cache => 'std'
-  caches_value :id, :sql => '...', :cache => false    # does NOT save any cache.  This avoids overwriting an attribute
+  caches_value :id, :sql => '...', :cache => false    # does NOT persist to db, just memoize in memory.  This avoids overwriting the attribute of the same name.
 
-ActiveRecord callbacks can be used to call load (make sure the value is in memory), clear (flush the cache and
-delete the instance), or reload (flush cache and reload instance) at certain times:
+ActiveRecord callbacks can be used to reload (update cache and reload instance) at certain times:
   
-  caches_value :standard_deviation, :sql => '...', :reload => [:after_save, :before_validation]
-  caches_value :full_formula, :sql => '...', :clear => :after_find
+  caches_value :standard_deviation, :sql => '...', :reload => [:before_save, :after_destroy]
+  caches_value :runic_formula, :sql => '...', :reload => :after_create
 
-Bugs can be filed at http://code.lighthouseapp.com/projects/4502-hoopla-rails-plugins/
 
-Copyright (c) 2007 Jack Danger Canty @ http://6brand.com, released under the MIT license
+Patches welcome, forks celebrated.
+
+Copyright (c) 2007 Jack Danger Canty @ http://jåck.com, released under the MIT license
