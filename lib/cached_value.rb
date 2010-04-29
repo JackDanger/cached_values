@@ -8,14 +8,14 @@ module ActiveRecord
       @owner, @reflection = owner, reflection
     end
     
-    def load
-      @target = find_target(true)
+    def load(skip_cache = false)
+      @target = find_target skip_cache
       update_cache(@target)
+      self
     end
 
     def reload
-      @owner.instance_variable_set("@#{@reflection.name}", nil)
-      @owner.send @reflection.name
+      @owner.send(@reflection.name).load(true)
     end
     
     alias update reload
@@ -23,6 +23,7 @@ module ActiveRecord
     def clear
       clear_cache
       @owner.instance_variable_set("@#{@reflection.name}", nil)
+      self
     end
 
     def target
