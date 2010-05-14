@@ -8,9 +8,11 @@ module ActiveRecord
       @owner, @reflection = owner, reflection
     end
     
-    def load(skip_cache = false)
-      @target = find_target(skip_cache)
-      update_cache(@target) if skip_cache
+    def load(force_update = false)
+      @target = find_target force_update
+      if force_update || (has_cache? && find_target_from_cache.nil?)
+        update_cache @target
+      end
       self
     end
 
