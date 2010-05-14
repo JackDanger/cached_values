@@ -9,8 +9,8 @@ module ActiveRecord
     end
     
     def load(skip_cache = false)
-      @target = find_target skip_cache
-      update_cache(@target)
+      @target = find_target(skip_cache)
+      update_cache(@target) if skip_cache
       self
     end
 
