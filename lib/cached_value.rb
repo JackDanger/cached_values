@@ -55,7 +55,7 @@ module ActiveRecord
     
       def find_target_by_eval
         if @reflection.options[:eval].is_a?(String)
-          eval(@reflection.options[:eval], @owner.send(:binding))
+          @owner.send :eval, @reflection.options[:eval]
         elsif @reflection.options[:eval].is_a?(Proc)
           @reflection.options[:eval].call(@owner)
         elsif @reflection.options[:eval].is_a?(Symbol)
