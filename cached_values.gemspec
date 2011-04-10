@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cached_values}
-  s.version = "1.7.2"
+  s.version = "1.7.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jack Danger Canty"]
@@ -17,10 +17,12 @@ Gem::Specification.new do |s|
     "README.markdown"
   ]
   s.files = [
+    "LICENSE",
     "MIT-LICENSE",
     "README.markdown",
     "Rakefile",
     "VERSION",
+    "cached_values.gemspec",
     "init.rb",
     "install.rb",
     "lib/cached_value.rb",
