@@ -69,10 +69,7 @@ module CachedValues # :nodoc:
   
     def create_cached_value_reflection(name, options)
       options.assert_valid_keys(:sql, :eval, :cache, :clear, :load, :reload)
-      
-      reflection = ActiveRecord::Reflection::MacroReflection.new(:cached_value, name, options, self)
-      write_inheritable_hash :reflections, name => reflection
-      reflection
+      ActiveRecord::Reflection::MacroReflection.new(:cached_value, name, options, self)
     end
 
     def cached_value_accessor_method(reflection, association_proxy_class)
