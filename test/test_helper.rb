@@ -1,11 +1,13 @@
 # Include this file in your test by copying the following line to your test:
 #   require File.expand_path(File.dirname(__FILE__) + "/test_helper")
 
+require 'rubygems'
+require 'bundler'
+Bundler.require :default, :test
+
 $:.unshift(File.dirname(__FILE__) + '/../lib')
 
-require 'rubygems'
-gem 'test-unit'
-require 'test/unit'
+require 'shoulda'
 require 'active_support'
 require 'active_record'
 require 'active_record/fixtures'
@@ -36,3 +38,4 @@ class ActiveSupport::TestCase #:nodoc:
 
   # Add more helper methods to be used by all tests here...
 end
+
