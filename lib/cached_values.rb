@@ -87,8 +87,8 @@ module CachedValues # :nodoc:
     
     def cached_value_callback_methods(reflection)
       if events = reflection.options[:reload]
-        events = Array(events).map { |event| event.to_s }
-        ActiveRecord::Callbacks::CALLBACKS.each do |callback|
+        events = Array(events).map(&:to_sym)
+        ActiveRecord::Callbacks::CALLBACKS.map(&:to_sym).each do |callback|
           if events.include?(callback)
             # before_save do |record|
             send callback do |record|
