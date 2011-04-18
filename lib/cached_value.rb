@@ -47,7 +47,7 @@ module ActiveRecord
       end
       
       def find_target_by_sql
-        sql = sanitize_sql(interpolate_sql(@reflection.options[:sql]))
+        sql = interpolate_and_sanitize_sql(@reflection.options[:sql])
         result = @owner.class.connection.select_value(sql)
         result = typecast_result(result)
         result
@@ -121,12 +121,13 @@ module ActiveRecord
         end
       end
       
-      def interpolate_sql(sql, record = nil)
-        @owner.send(:interpolate_sql, sql, record)
-      end
-
-      def sanitize_sql(sql)
-        @owner.class.send(:sanitize_sql, sql)
+      def interpolate_and_sanitize_sql(sql, record = nil)
+        sanitized = @owner.class.send(:sanitize_sql, sql, record)
+        if sanitized =~ /\#\{.*\}/
+          @owner.instance_eval("%@#{sanitized.gsub('@', '\@')}@", __FILE__, __LINE__)
+        else
+          sanitized
+        end
       end
       
   end
