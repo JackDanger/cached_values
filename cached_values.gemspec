@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cached_values}
-  s.version = "1.7.3"
+  s.version = "1.8.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jack Danger Canty"]
-  s.date = %q{2011-04-10}
+  s.date = %q{2011-04-18}
   s.description = %q{Speedup your ActiveRecord by storing and updating the results of SQL or Ruby expressions into record attributes}
   s.email = %q{rubygems@6brand.com}
   s.extra_rdoc_files = [
@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
     "README.markdown"
   ]
   s.files = [
+    "Gemfile",
     "LICENSE",
     "MIT-LICENSE",
     "README.markdown",
@@ -51,12 +52,15 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<object_proxy>, [">= 0"])
+      s.add_runtime_dependency(%q<object_proxy>, [">= 0"])
       s.add_development_dependency(%q<active_record>, [">= 0"])
     else
+      s.add_dependency(%q<object_proxy>, [">= 0"])
       s.add_dependency(%q<object_proxy>, [">= 0"])
       s.add_dependency(%q<active_record>, [">= 0"])
     end
   else
+    s.add_dependency(%q<object_proxy>, [">= 0"])
     s.add_dependency(%q<object_proxy>, [">= 0"])
     s.add_dependency(%q<active_record>, [">= 0"])
   end
