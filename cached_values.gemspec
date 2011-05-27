@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cached_values}
-  s.version = "1.8.0"
+  s.version = "1.8.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jack Danger Canty"]
-  s.date = %q{2011-04-18}
+  s.date = %q{2011-05-27}
   s.description = %q{Speedup your ActiveRecord by storing and updating the results of SQL or Ruby expressions into record attributes}
   s.email = %q{rubygems@6brand.com}
   s.extra_rdoc_files = [
@@ -40,12 +40,6 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.4.2}
   s.summary = %q{Memoize and persist calculations into ActiveRecord attributes}
-  s.test_files = [
-    "test/cached_values_test.rb",
-    "test/leprechaun.rb",
-    "test/schema.rb",
-    "test/test_helper.rb"
-  ]
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
