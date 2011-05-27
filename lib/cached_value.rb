@@ -32,6 +32,10 @@ module ActiveRecord
       @target
     end
 
+    def to_yaml
+      target.is_a?(String) ? target : target.to_yaml
+    end
+
     def find_target(skip_cache = false)
       target = find_target_from_cache unless skip_cache
       unless target
