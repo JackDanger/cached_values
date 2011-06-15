@@ -12,6 +12,19 @@ module CachedValues # :nodoc:
     @perform_save = true
   end
   
+  def self.run?
+    @enabled = true if @enabled.nil?
+    @enabled
+  end
+
+  def self.disable!
+    @enabled = false
+  end
+
+  def self.enable!
+    @enabled = true
+  end
+
   # USAGE:
   #  
   # a very simple case in which cached_values works just like the .count method on a has_many association:
@@ -92,12 +105,14 @@ module CachedValues # :nodoc:
           if events.include?(callback)
             # before_save do |record|
             send callback do |record|
-              if %{before_save before_create before_destroy}.include?(callback.to_s)
-                CachedValues.without_saving_record do
+              if CachedValues.run?
+                if %{before_save before_create before_destroy}.include?(callback.to_s)
+                  CachedValues.without_saving_record do
+                    record.send(reflection.name).reload
+                  end
+                else
                   record.send(reflection.name).reload
                 end
-              else
-                record.send(reflection.name).reload
               end
             end
           end

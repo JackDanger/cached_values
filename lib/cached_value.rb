@@ -83,6 +83,7 @@ module ActiveRecord
       
       def update_cache(value)
         return unless has_cache?
+        return unless CachedValues.run?
 
         @owner.send(:write_attribute, cache_column, value)
 
@@ -133,6 +134,5 @@ module ActiveRecord
           sanitized
         end
       end
-      
   end
 end
