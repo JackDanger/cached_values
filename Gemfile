@@ -4,6 +4,7 @@ gem 'object_proxy'
 
 group :development do
   gem 'rake'
+  gem 'jeweler'
 end
 
 group :test do
