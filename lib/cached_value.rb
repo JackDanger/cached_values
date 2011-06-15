@@ -90,6 +90,8 @@ module ActiveRecord
       end
       
       def update_cache(value)
+        return unless has_cache?
+        return unless CachedValues.run?
         soft_update value
 
         return if @owner.new_record? || !CachedValues.perform_save?
