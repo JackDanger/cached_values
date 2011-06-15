@@ -10,8 +10,10 @@ module ActiveRecord
     
     def load(force_update = false)
       @target = find_target force_update
-      if force_update || (has_cache? && find_target_from_cache.nil?)
+      if force_update
         update_cache @target
+      elsif has_cache? && find_target_from_cache.nil?
+        soft_update @target
       end
       self
     end
@@ -80,12 +82,15 @@ module ActiveRecord
       def clear_cache
         update_cache(nil)
       end
-      
-      def update_cache(value)
+
+      def soft_update(value)
         return unless has_cache?
         return unless CachedValues.run?
-
         @owner.send(:write_attribute, cache_column, value)
+      end
+      
+      def update_cache(value)
+        soft_update value
 
         return if @owner.new_record? || !CachedValues.perform_save?
 
